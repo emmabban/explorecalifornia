@@ -11,6 +11,7 @@ import javax.persistence.Id;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Data
 public class TourPackage {
     @Id
     private String code;

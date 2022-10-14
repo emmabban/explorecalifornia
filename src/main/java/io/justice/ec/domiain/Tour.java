@@ -1,15 +1,14 @@
 package io.justice.ec.domiain;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
 /*@Data*/
 @RequiredArgsConstructor
+@NoArgsConstructor
 @Entity
+@Data
 public class Tour {
 
     @Id
