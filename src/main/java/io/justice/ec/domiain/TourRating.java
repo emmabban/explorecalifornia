@@ -1,25 +1,38 @@
 package io.justice.ec.domiain;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
+@Document
 @Data
+@RequiredArgsConstructor
 public class TourRating {
-    @EmbeddedId
-    private TourRatingPk pk;
 
-    @Column(nullable = false)
+    @Id
+    private String id;
+
+    @NonNull
+    private String tourId;
+
+    @NotNull
+    @NonNull
+    private Integer customerId;
+
+    @Min(0)
+    @Max(5)
+    @NonNull
     private Integer score;
 
-    @Column
+    @Size(max = 255)
+    @NonNull
     private String comment;
 
 

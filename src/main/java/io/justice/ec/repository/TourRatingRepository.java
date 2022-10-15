@@ -1,7 +1,6 @@
 package io.justice.ec.repository;
 
 import io.justice.ec.domiain.TourRating;
-import io.justice.ec.domiain.TourRatingPk;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
@@ -12,13 +11,13 @@ import java.util.List;
 import java.util.Optional;
 
 @RepositoryRestResource(exported = false)
-public interface TourRatingRepository  extends CrudRepository<TourRating, TourRatingPk> {
+public interface TourRatingRepository  extends CrudRepository<TourRating, String> {
 
-    List<TourRating> findByPkTourId(Integer tourId);
+    List<TourRating> findByTourId(String tourId);
 
-    Optional<TourRating> findByPkTourIdAndPkCustomerId(Integer tourId, Integer customerId);
+    Optional<TourRating> findByTourIdAndCustomerId(String tourId, Integer customerId);
 
-    Page<TourRating> findByPkTourId(Integer tourId, Pageable pageable);
+    Page<TourRating> findByTourId(String tourId, Pageable pageable);
 
 
     @Override
@@ -31,7 +30,7 @@ public interface TourRatingRepository  extends CrudRepository<TourRating, TourRa
 
     @Override
     @RestResource(exported = false)
-    void deleteById(TourRatingPk tourRatingPk);
+    void deleteById(String string);
 
     @Override
     @RestResource(exported = false)
@@ -39,7 +38,7 @@ public interface TourRatingRepository  extends CrudRepository<TourRating, TourRa
 
     @Override
     @RestResource(exported = false)
-    void deleteAllById(Iterable<? extends TourRatingPk> tourRatingPks);
+    void deleteAllById(Iterable<? extends String> strings);
 
     @Override
     @RestResource(exported = false)

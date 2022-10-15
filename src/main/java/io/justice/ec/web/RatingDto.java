@@ -1,3 +1,4 @@
+/*
 package io.justice.ec.web;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -28,3 +29,4 @@ public class RatingDto {
         this(tourRating.getScore(), tourRating.getComment(), tourRating.getPk().getCustomerId());
     }
 }
+*/

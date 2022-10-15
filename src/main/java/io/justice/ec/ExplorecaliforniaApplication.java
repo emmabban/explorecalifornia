@@ -2,22 +2,18 @@ package io.justice.ec;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.justice.ec.domiain.Difficulty;
-import io.justice.ec.domiain.Region;
-import io.justice.ec.repository.TourPackageRepository;
-import io.justice.ec.repository.TourRepository;
 import io.justice.ec.service.TourPackageService;
 import io.justice.ec.service.TourService;
 import lombok.AllArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -25,10 +21,16 @@ import java.util.stream.Collectors;
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
 import static com.fasterxml.jackson.annotation.PropertyAccessor.FIELD;
 
-@AllArgsConstructor
+/*@AllArgsConstructor*/
+@RequiredArgsConstructor
 @SpringBootApplication
 public class ExplorecaliforniaApplication implements CommandLineRunner {
+
+	@Value("${ec.importfile}")
+	private String importFile;
+	@NonNull
 	private final TourService tourService;
+	@NonNull
 	private final TourPackageService tourPackageService;
 
 	public static void main(String[] args) {
@@ -44,7 +46,8 @@ public class ExplorecaliforniaApplication implements CommandLineRunner {
 		InputStream inputStream = resource.getInputStream();*/
 
 		//Load the tours from an external JSON File
-		createTours("exploreCalifornia.json");
+		//createTours("exploreCalifornia.json");
+		createTours(importFile);
 		long numOfTours = tourService.total();
 
 	}
@@ -70,15 +73,8 @@ public class ExplorecaliforniaApplication implements CommandLineRunner {
 	private void createTours(String fileImport) throws IOException {
 		TourFromFile.read(fileImport).forEach(importedTour ->
 				tourService.createTour(importedTour.getTitle(),
-						importedTour.getDescription(),
-						importedTour.getBlurb(),
-						importedTour.getPrice(),
-						importedTour.getLength(),
-						importedTour.getBullets(),
-						importedTour.getKeywords(),
-						importedTour.getPackageType(),
-						importedTour.getDifficulty(),
-						importedTour.getRegion()));
+						importedTour.getPackageName(),
+						importedTour.getDetails()));
 	}
 
 
@@ -134,33 +130,33 @@ public class ExplorecaliforniaApplication implements CommandLineRunner {
 	 */
 	private static class TourFromFile {
 		//fields
-		private String packageType, title, description, blurb, price, length,
-				bullets, keywords, difficulty, region;
+		private String title, packageName;
+		Map<String, String> details;
+
+		TourFromFile(Map<String, String> record){
+			this.title = record.get("title");
+			this.packageName = record.get("packageType");
+			this.details = record;
+			this.details.remove("packageType");
+			this.details.remove("title");
+
+		}
 		//reader
 		static List<TourFromFile> read(String fileToImport) throws IOException {
-			return new ObjectMapper().setVisibility(FIELD, ANY).
-					readValue(new FileInputStream(fileToImport), new TypeReference<List<TourFromFile>>() {});
+
+			List<Map<String, String>> records = new ObjectMapper().setVisibility(FIELD, ANY).
+					readValue(new FileInputStream(fileToImport), new TypeReference<List<Map<String,String>>>() {});
+
+			return records.stream().map(TourFromFile::new).collect(Collectors.toList());
 		}
 		protected TourFromFile(){}
-
-		String getPackageType() { return packageType; }
-
 		String getTitle() { return title; }
+		String getPackageName() { return packageName; }
 
-		String getDescription() { return description; }
+		Map<String, String> getDetails() {
+			return details;
+		}
 
-		String getBlurb() { return blurb; }
 
-		Integer getPrice() { return Integer.parseInt(price); }
-
-		String getLength() { return length; }
-
-		String getBullets() { return bullets; }
-
-		String getKeywords() { return keywords; }
-
-		Difficulty getDifficulty() { return Difficulty.valueOf(difficulty); }
-
-		Region getRegion() { return Region.findByLabel(region); }
 	}
 }

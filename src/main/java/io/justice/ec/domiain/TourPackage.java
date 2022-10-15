@@ -3,20 +3,18 @@ package io.justice.ec.domiain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
 /*@Data*/
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
+@Document
 @Data
 public class TourPackage {
     @Id
     private String code;
 
-    @Column
     private String name;
 
 

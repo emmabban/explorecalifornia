@@ -1,61 +1,41 @@
 package io.justice.ec.domiain;
 
 import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
+import java.util.Map;
+
 
 /*@Data*/
 @RequiredArgsConstructor
 @NoArgsConstructor
-@Entity
+@Document
 @Data
 public class Tour {
 
     @Id
-    @GeneratedValue
-    private Integer id;
+    private String id;
 
     @NonNull
-    @Column
+    @Indexed
     private String title;
 
+    @Indexed
     @NonNull
-    @Column(length = 2000)
-    private String description;
-
-    @NonNull
-    @Column(length = 2000)
-    private String blurb;
+    private String tourPackageCode;
 
     @NonNull
-    @Column
-    private Integer price;
+    private String tourPackageName;
 
     @NonNull
-    @Column
-    private String duration;
+    private Map<String, String> details;
 
-    @NonNull
-    @Column(length = 2000)
-    private String bullets;
-
-    @NonNull
-    @Column
-    private String keywords;
-
-    @NonNull
-    @ManyToOne
-    private TourPackage tourPackage;
-
-    @NonNull
-    @Column
-    @Enumerated
-    private Difficulty difficulty;
-
-    /*@NonNull*/
-    @Column
-    @Enumerated
-    private Region region;
-
-
+    public Tour(@NonNull String title, @NonNull TourPackage  tourPackage, @NonNull Map<String, String> details) {
+        this.title = title;
+        this.tourPackageCode = tourPackage.getCode();
+        this.tourPackageName = tourPackage.getName();
+        this.details = details;
+    }
 }
